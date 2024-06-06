@@ -20,7 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
-    private String LastName;
+    private String lastName;
     private String otherNme;
     private String gender;
     private String address;

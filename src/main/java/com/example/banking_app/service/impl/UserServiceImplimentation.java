@@ -14,7 +14,13 @@ public class UserServiceImplimentation implements UserService{
          * */
 
         User user = User.builder()
-
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .otherNme(userDto.getOtherNme())
+                .gender(userDto.getGender())
+                .address(userDto.getAddress())
+                .stateOfOrigin(userDto.getStateOfOrigin())
+                .accountNumber()
                 .build();
     }
 }

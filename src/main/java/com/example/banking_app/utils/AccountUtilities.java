@@ -1,0 +1,24 @@
+package com.example.banking_app.utils;
+
+import java.time.Year;
+import java.util.HashSet;
+
+public class AccountUtilities {
+
+   public String generateAccountNumber(){
+
+       Year year = Year.now();
+        int min = 100000; // Smallest 6-digit number
+       int max = 999999; // Largest 6-digit number
+
+
+       int randNumber = (int) Math.floor(Math.random() * (max - min + 1) + min);
+
+       String yearString = String.valueOf(year);
+       String randNumberString = String.valueOf(randNumber);
+
+       StringBuilder accountNumber = new StringBuilder();
+
+   }
+}
+
