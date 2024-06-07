@@ -21,9 +21,13 @@ public class UserServiceImplimentation implements UserService{
         /**
          * saving new user to database
          * */
-
+//        check if user exist
         if (uSerRepository.existsByEmail(userDto.getEmail())){
-
+            return  BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_EXISTS_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_EXISTS_MESSAGE)
+                    .accountInfo(null)
+                    .build();
         }
 
         User user = User.builder()
@@ -40,6 +44,7 @@ public class UserServiceImplimentation implements UserService{
                 .alternativePhoneNumber(userDto.getAlternativePhoneNumber())
                 .status("Active")
                 .build();
+        User saveUser = uSerRepository.save(user);
 
     }
 }
