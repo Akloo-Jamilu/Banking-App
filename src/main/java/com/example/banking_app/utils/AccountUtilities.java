@@ -5,6 +5,9 @@ import java.util.HashSet;
 
 public class AccountUtilities {
 
+    public static final String ACCOUNT_EXISTS_CODE = "001";
+    public static final String ACCOUNT_EXISTS_MESSAGE = "This user already has an account";
+
    public static String generateAccountNumber(){
 
        Year PresentYear = Year.now();
