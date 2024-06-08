@@ -2,7 +2,7 @@ package com.example.banking_app.controller;
 
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
-import com.example.banking_app.service.impl.UserService;
+import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UserServiceRepository userServiceRepository;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserServiceRepository userServiceRepository) {
+        this.userServiceRepository = userServiceRepository;
     }
 
     @PostMapping
     public BankRespons createAccount(@RequestBody UserDto userDto){
-        return userService.createAccount(userDto);
+        return userServiceRepository.createAccount(userDto);
 
     }
 }

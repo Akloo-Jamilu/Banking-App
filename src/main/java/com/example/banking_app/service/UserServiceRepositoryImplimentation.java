@@ -1,9 +1,12 @@
-package com.example.banking_app.service.impl;
+package com.example.banking_app.service;
+import com.example.banking_app.dto.EmailDetails;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.USerRepository;
 import com.example.banking_app.respons.AccountInfo;
 import com.example.banking_app.respons.BankRespons;
+import com.example.banking_app.service.servicesRepository.EmailServiceRepository;
+import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import com.example.banking_app.utils.AccountUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,16 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Service
-public class UserServiceImplimentation implements UserService {
+public class UserServiceRepositoryImplimentation implements UserServiceRepository {
 
     private final USerRepository uSerRepository;
     private final Validator validator;
 
     @Autowired
-    public UserServiceImplimentation(USerRepository uSerRepository, Validator validator) {
+    EmailServiceRepository emailServiceRepository;
+
+    @Autowired
+    public UserServiceRepositoryImplimentation(USerRepository uSerRepository, Validator validator) {
         this.uSerRepository = uSerRepository;
         this.validator = validator;
     }
@@ -59,7 +65,16 @@ public class UserServiceImplimentation implements UserService {
 
         // Save User entity to the repository
         User saveUser = uSerRepository.save(user);
-
+        //send an email to created user
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(saveUser.getEmail())
+                .subject("ACCOUNT CREATION")
+                .messageBody("We are thrilled to have you on board, looking forward to serving you. \n " +
+                        "Here is your Account Details: \n" +
+                        " Account Name: " + saveUser.getFirstName() + " " + saveUser.getLastName() + " " + saveUser.getOtherNme() +  " \n" +
+                        "Account Number: " + saveUser.getAccountNumber())
+                .build();
+        emailServiceRepository.sendEmailAlert(emailDetails);
         // Build and return response
         return BankRespons.builder()
                 .responseCode(AccountUtilities.ACCOUNT_CREATION_CODE)
