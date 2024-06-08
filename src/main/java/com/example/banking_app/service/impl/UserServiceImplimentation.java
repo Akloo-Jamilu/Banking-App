@@ -3,6 +3,7 @@ package com.example.banking_app.service.impl;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.USerRepository;
+import com.example.banking_app.respons.AccountInfo;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.utils.AccountUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,15 @@ public class UserServiceImplimentation implements UserService{
                 .status("Active")
                 .build();
         User saveUser = uSerRepository.save(user);
+        return BankRespons.builder()
+                .responseCode(AccountUtilities.ACCOUNT_CREATION_CODE)
+                .responseMessage(AccountUtilities.ACCOUNT_CREATION_MESSAGE)
+                .accountInfo(AccountInfo.builder()
+                        .accountBalance(saveUser.getAccountNumber())
+                        .aacountNumber(saveUser.getAccountNumber())
+                        .accountName(saveUser.getFirstName()+ " " + saveUser.getFirstName()+ " " + saveUser.getOtherNme())
+                        .build())
+                .build();
 
     }
 }
