@@ -1,5 +1,6 @@
 package com.example.banking_app.service;
 import com.example.banking_app.dto.EmailDetails;
+import com.example.banking_app.dto.EnquiryDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.USerRepository;
@@ -8,6 +9,7 @@ import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.EmailServiceRepository;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import com.example.banking_app.utils.AccountUtilities;
+import com.example.banking_app.utils.UserValidations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,9 @@ import java.util.Set;
 public class UserServiceRepositoryImplimentation implements UserServiceRepository {
 
     private final USerRepository uSerRepository;
-    private final Validator validator;
+    private final UserValidations userValidations;
+
+
 
     @Autowired
     EmailServiceRepository emailServiceRepository;
@@ -30,13 +34,14 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
     @Autowired
     public UserServiceRepositoryImplimentation(USerRepository uSerRepository, Validator validator) {
         this.uSerRepository = uSerRepository;
-        this.validator = validator;
+        this.userValidations = new UserValidations(validator);
+
     }
 
     @Override
     public BankRespons createAccount(UserDto userDto) {
         // Validate UserDto
-        validateUserDto(userDto);
+        userValidations.validateUserDto(userDto);
 
         // Check if user exists
         if (uSerRepository.existsByEmail(userDto.getEmail())) {
@@ -87,14 +92,9 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                 .build();
     }
 
-    private void validateUserDto(UserDto userDto) {
-        Set<ConstraintViolation<UserDto>> violations = validator.validate(userDto);
-        if (!violations.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (ConstraintViolation<UserDto> violation : violations) {
-                stringBuilder.append(violation.getMessage()).append("; ");
-            }
-            throw new ConstraintViolationException("Validation failed: " + stringBuilder.toString(), violations);
-        }
+    @Override
+    public BankRespons balanceEnquiry(EnquiryDto enquiryDto) {
+        return null;
     }
+
 }
