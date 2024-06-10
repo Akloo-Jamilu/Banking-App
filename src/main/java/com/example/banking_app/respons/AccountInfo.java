@@ -13,6 +13,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class AccountInfo {
     private  String accountName;
-    private String accountBalance;
-    private String aacountNumber;
+    private BigDecimal accountBalance;
+    private String accountNumber;
 }

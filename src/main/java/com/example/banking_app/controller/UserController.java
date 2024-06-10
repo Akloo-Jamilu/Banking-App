@@ -1,13 +1,11 @@
 package com.example.banking_app.controller;
 
+import com.example.banking_app.dto.EnquiryDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,9 +19,21 @@ public class UserController {
         this.userServiceRepository = userServiceRepository;
     }
 
+//    create customer end point
     @PostMapping
     public BankRespons createAccount(@RequestBody UserDto userDto){
         return userServiceRepository.createAccount(userDto);
+    }
 
+//    get user account balance
+    @GetMapping("balanceEnquiry")
+    public BankRespons balanceEnquiry(@RequestBody EnquiryDto enquiryDto){
+        return userServiceRepository.balanceEnquiry(enquiryDto);
+    }
+
+//    get user account name
+    @GetMapping("nameEnquiry")
+    public String nameEnquiry(@RequestBody EnquiryDto enquiryDto){
+        return userServiceRepository.nameEnquiry(enquiryDto);
     }
 }

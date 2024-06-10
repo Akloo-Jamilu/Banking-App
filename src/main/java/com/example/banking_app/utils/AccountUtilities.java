@@ -11,6 +11,8 @@ public class AccountUtilities {
     public static final String ACCOUNT_CREATION_MESSAGE = "User created successfully";
     public static final String ACCOUNT_NOT_EXIST_CODE = "03";
     public static final String ACCOUNT_NOT_EXIST_MESSAGE = "No user with that Account Number";
+    public static final String ACCOUNT_FOUND_CODE = "04";
+    public static final String ACCOUNT_FOUND_MESSAGE = "Account fetched successfully";
 
    public static String generateAccountNumber(){
 

@@ -38,6 +38,8 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     }
 
+
+//    creating a customer and assigning an account balance
     @Override
     public BankRespons createAccount(UserDto userDto) {
         // Validate UserDto
@@ -85,13 +87,16 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                 .responseCode(AccountUtilities.ACCOUNT_CREATION_CODE)
                 .responseMessage(AccountUtilities.ACCOUNT_CREATION_MESSAGE)
                 .accountInfo(AccountInfo.builder()
-                        .accountBalance(String.valueOf(saveUser.getAccountBalance()))
-                        .aacountNumber(saveUser.getAccountNumber())
+                        .accountBalance(saveUser.getAccountBalance())
+                        .accountNumber(saveUser.getAccountNumber())
                         .accountName(saveUser.getFirstName() + " " + saveUser.getLastName() + " " + saveUser.getOtherNme())
                         .build())
                 .build();
     }
 
+
+
+//    getting customer account balance
     @Override
     public BankRespons balanceEnquiry(EnquiryDto enquiryDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
@@ -103,13 +108,26 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .build();
         }
         User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
-
-
+        return BankRespons.builder()
+                .responseCode(AccountUtilities.ACCOUNT_FOUND_CODE)
+                .responseMessage(AccountUtilities.ACCOUNT_FOUND_MESSAGE)
+                .accountInfo(AccountInfo.builder()
+                        .accountBalance(foundUser.getAccountBalance())
+                        .accountName(foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme())
+                        .build())
+                .build();
     }
+
 
     @Override
     public String nameEnquiry(EnquiryDto enquiryDto) {
-        return null;
+        boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
+        if (!isAccountExist){
+            return AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE;
+        }
+        User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
+        return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme();
+
     }
 
 }
