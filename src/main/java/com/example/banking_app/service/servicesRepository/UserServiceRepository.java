@@ -7,4 +7,5 @@ import com.example.banking_app.respons.BankRespons;
 public interface UserServiceRepository {
     BankRespons createAccount(UserDto userDto);
     BankRespons balanceEnquiry(EnquiryDto enquiryDto);
+    String nameEnquiry(EnquiryDto enquiryDto);
 }

@@ -70,7 +70,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
         // Save User entity to the repository
         User saveUser = uSerRepository.save(user);
-        //send an email to created user
+        //email created user
         EmailDetails emailDetails = EmailDetails.builder()
                 .recipient(saveUser.getEmail())
                 .subject("ACCOUNT CREATION")
@@ -94,6 +94,21 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     @Override
     public BankRespons balanceEnquiry(EnquiryDto enquiryDto) {
+        boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
+        if (!isAccountExist){
+            return BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+        User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
+
+
+    }
+
+    @Override
+    public String nameEnquiry(EnquiryDto enquiryDto) {
         return null;
     }
 
