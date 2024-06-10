@@ -1,6 +1,7 @@
 package com.example.banking_app.service;
 import com.example.banking_app.dto.EmailDetails;
 import com.example.banking_app.dto.EnquiryDto;
+import com.example.banking_app.dto.TransactionDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.USerRepository;
@@ -128,6 +129,31 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
         return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme();
 
+    }
+
+    @Override
+    public BankRespons creditAccount(TransactionDto transactionDto) {
+        boolean isAccountExist = uSerRepository.existsByAccountNumber(transactionDto.getAccountNumber());
+        if (!isAccountExist){
+            return BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+        User userToCredit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());
+        userToCredit.setAccountBalance(userToCredit.getAccountBalance().add(transactionDto.getAmount()));
+        uSerRepository.save(userToCredit);
+
+        return BankRespons.builder()
+                .responseCode(AccountUtilities.ACCOUNT_CREDIT_CODE)
+                .responseMessage(AccountUtilities.ACCOUNT_CREDIT_MESSAGE)
+                .accountInfo(AccountInfo.builder()
+                        .accountName(userToCredit.getFirstName() + " " + userToCredit.getLastName() + " " + userToCredit.getOtherNme())
+                        .accountBalance(userToCredit.getAccountBalance())
+                        .accountNumber(userToCredit.getAccountNumber())
+                        .build())
+                .build();
     }
 
 }

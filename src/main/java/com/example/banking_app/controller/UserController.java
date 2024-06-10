@@ -1,6 +1,7 @@
 package com.example.banking_app.controller;
 
 import com.example.banking_app.dto.EnquiryDto;
+import com.example.banking_app.dto.TransactionDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
@@ -35,5 +36,11 @@ public class UserController {
     @GetMapping("nameEnquiry")
     public String nameEnquiry(@RequestBody EnquiryDto enquiryDto){
         return userServiceRepository.nameEnquiry(enquiryDto);
+    }
+
+//    credit customer account
+    @PostMapping("credit")
+    public BankRespons creditAccount(@RequestBody TransactionDto transactionDto){
+        return userServiceRepository.creditAccount(transactionDto);
     }
 }
