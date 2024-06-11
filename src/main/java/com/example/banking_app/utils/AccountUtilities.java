@@ -13,10 +13,12 @@ public class AccountUtilities {
     public static final String ACCOUNT_NOT_EXIST_MESSAGE = "No user with that Account Number";
     public static final String ACCOUNT_FOUND_CODE = "04";
     public static final String ACCOUNT_FOUND_MESSAGE = "Account fetched successfully";
-    public static final String ACCOUNT_CREDIT_CODE = "05";
-    public static final String ACCOUNT_CREDIT_MESSAGE = "Account credited successfully";
+    public static final String ACCOUNT_CREDITED_CODE = "05";
+    public static final String ACCOUNT_CREDITED_MESSAGE = "Account credited successfully";
     public static final String ACCOUNT_INSUFFICIENT_BALANCE_CODE = "06";
     public static final String ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE = "Sorry, insufficient balance";
+    public static final String ACCOUNT_DEBITED_CODE = "07";
+    public static final String ACCOUNT_DEBITED_MESSAGE = "Account credited successfully";
 
 
 

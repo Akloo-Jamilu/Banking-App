@@ -173,6 +173,18 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
             return BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }else {
+            userToDebit.setAccountBalance(userToDebit.getAccountBalance().subtract(transactionDto.getAmount()));
+            uSerRepository.save(userToDebit);
+            return BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_DEBITED_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_DEBITED_MESSAGE)
+                    .accountInfo(AccountInfo.builder()
+                            .accountNumber(transactionDto.getAccountNumber())
+
+                            .build())
                     .build();
         }
     }
