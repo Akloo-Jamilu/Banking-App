@@ -171,8 +171,8 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         int debitAmount = Integer.parseInt(transactionDto.getAmount().toString());
         if (availableBalance < debitAmount){
             return BankRespons.builder()
-                    .responseCode(AccountUtilities.ACCOUNT_CREDIT_CODE)s
-                    .responseMessage(AccountUtilities.ACCOUNT_CREDIT_MESSAGE)
+                    .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
                     .build();
         }
     }

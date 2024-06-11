@@ -15,9 +15,12 @@ public class AccountUtilities {
     public static final String ACCOUNT_FOUND_MESSAGE = "Account fetched successfully";
     public static final String ACCOUNT_CREDIT_CODE = "05";
     public static final String ACCOUNT_CREDIT_MESSAGE = "Account credited successfully";
+    public static final String ACCOUNT_INSUFFICIENT_BALANCE_CODE = "06";
+    public static final String ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE = "Sorry, insufficient balance";
 
 
-   public static String generateAccountNumber(){
+
+    public static String generateAccountNumber(){
 
        Year PresentYear = Year.now();
         int min = 100000; // Smallest 6-digit number
