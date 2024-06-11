@@ -16,6 +16,7 @@ public class AccountUtilities {
     public static final String ACCOUNT_CREDIT_CODE = "05";
     public static final String ACCOUNT_CREDIT_MESSAGE = "Account credited successfully";
 
+
    public static String generateAccountNumber(){
 
        Year PresentYear = Year.now();

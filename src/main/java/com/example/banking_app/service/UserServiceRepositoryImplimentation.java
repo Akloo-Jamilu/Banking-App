@@ -158,7 +158,23 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     @Override
     public BankRespons debitACCount(TransactionDto transactionDto) {
-        return null;
+        boolean isAccountExist = uSerRepository.existsByAccountNumber(transactionDto.getAccountNumber());
+        if (!isAccountExist){
+            return BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+        User userToDebit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());
+        int availableBalance = Integer.parseInt(userToDebit.getAccountBalance().toString());
+        int debitAmount = Integer.parseInt(transactionDto.getAmount().toString());
+        if (availableBalance < debitAmount){
+            return BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_CREDIT_CODE)s
+                    .responseMessage(AccountUtilities.ACCOUNT_CREDIT_MESSAGE)
+                    .build();
+        }
     }
 
 }
