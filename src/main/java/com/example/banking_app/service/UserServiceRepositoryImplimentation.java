@@ -183,7 +183,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .responseMessage(AccountUtilities.ACCOUNT_DEBITED_MESSAGE)
                     .accountInfo(AccountInfo.builder()
                             .accountNumber(transactionDto.getAccountNumber())
-
+                            .accountName(userToDebit.getFirstName() + " " + userToDebit.getLastName() + " " + userToDebit.getOtherNme())
                             .build())
                     .build();
         }
