@@ -10,4 +10,5 @@ public interface UserServiceRepository {
     BankRespons balanceEnquiry(EnquiryDto enquiryDto);
     String nameEnquiry(EnquiryDto enquiryDto);
     BankRespons creditAccount(TransactionDto transactionDto);
+    BankRespons debitACCount(TransactionDto transactionDto);
 }

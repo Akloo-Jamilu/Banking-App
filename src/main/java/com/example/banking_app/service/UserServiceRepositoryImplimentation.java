@@ -156,4 +156,9 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                 .build();
     }
 
+    @Override
+    public BankRespons debitACCount(TransactionDto transactionDto) {
+        return null;
+    }
+
 }
