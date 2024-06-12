@@ -12,6 +12,8 @@ import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import com.example.banking_app.utils.AccountUtilities;
 import com.example.banking_app.utils.UserValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.ConstraintViolation;
@@ -19,6 +21,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Set;
 
 @Service
@@ -156,29 +159,34 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                 .build();
     }
 
-    @Override
-    public BankRespons debitACCount(TransactionDto transactionDto) {
+//    @Override
+    public ResponseEntity<BankRespons> debitACCount(TransactionDto transactionDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(transactionDto.getAccountNumber());
-        if (!isAccountExist){
-            return BankRespons.builder()
+        if (!isAccountExist) {
+            BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
                     .accountInfo(null)
                     .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
         }
+
         User userToDebit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());
-        int availableBalance = Integer.parseInt(userToDebit.getAccountBalance().toString());
-        int debitAmount = Integer.parseInt(transactionDto.getAmount().toString());
-        if (availableBalance < debitAmount){
-            return BankRespons.builder()
+        BigInteger availableBalance = userToDebit.getAccountBalance().toBigInteger();
+        BigInteger debitAmount = transactionDto.getAmount().toBigInteger();
+
+        if (availableBalance.compareTo(debitAmount) < 0) {
+            BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
                     .accountInfo(null)
                     .build();
-        }else {
+            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
+        } else {
             userToDebit.setAccountBalance(userToDebit.getAccountBalance().subtract(transactionDto.getAmount()));
             uSerRepository.save(userToDebit);
-            return BankRespons.builder()
+
+            BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_DEBITED_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_DEBITED_MESSAGE)
                     .accountInfo(AccountInfo.builder()
@@ -187,7 +195,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                             .accountBalance(userToDebit.getAccountBalance())
                             .build())
                     .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.OK);
         }
     }
-
 }

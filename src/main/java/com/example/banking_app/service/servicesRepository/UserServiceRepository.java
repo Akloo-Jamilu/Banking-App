@@ -4,11 +4,12 @@ import com.example.banking_app.dto.EnquiryDto;
 import com.example.banking_app.dto.TransactionDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
+import org.springframework.http.ResponseEntity;
 
 public interface UserServiceRepository {
     BankRespons createAccount(UserDto userDto);
     BankRespons balanceEnquiry(EnquiryDto enquiryDto);
     String nameEnquiry(EnquiryDto enquiryDto);
     BankRespons creditAccount(TransactionDto transactionDto);
-    BankRespons debitACCount(TransactionDto transactionDto);
+    ResponseEntity<BankRespons> debitACCount(TransactionDto transactionDto);
 }

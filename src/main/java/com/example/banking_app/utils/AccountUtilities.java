@@ -18,7 +18,7 @@ public class AccountUtilities {
     public static final String ACCOUNT_INSUFFICIENT_BALANCE_CODE = "06";
     public static final String ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE = "Sorry, insufficient balance";
     public static final String ACCOUNT_DEBITED_CODE = "07";
-    public static final String ACCOUNT_DEBITED_MESSAGE = "Account credited successfully";
+    public static final String ACCOUNT_DEBITED_MESSAGE = "Account debited successfully";
 
 
 

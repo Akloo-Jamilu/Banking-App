@@ -6,6 +6,7 @@ import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("debit")
-    public BankRespons debitAccount(@RequestBody TransactionDto transactionDto){
+    public ResponseEntity<BankRespons> debitAccount(@RequestBody TransactionDto transactionDto){
         return userServiceRepository.debitACCount(transactionDto);
     }
 }
