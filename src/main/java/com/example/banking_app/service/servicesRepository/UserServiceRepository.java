@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserServiceRepository {
     BankRespons createAccount(UserDto userDto);
-    BankRespons balanceEnquiry(EnquiryDto enquiryDto);
-    String nameEnquiry(EnquiryDto enquiryDto);
+    ResponseEntity<BankRespons> balanceEnquiry(EnquiryDto enquiryDto);
+    ResponseEntity<BankRespons> nameEnquiry(EnquiryDto enquiryDto);
     ResponseEntity<BankRespons> creditAccount(TransactionDto transactionDto);
     ResponseEntity<BankRespons> debitACCount(TransactionDto transactionDto);
 }

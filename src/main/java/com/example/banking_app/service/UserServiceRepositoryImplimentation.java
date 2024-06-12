@@ -102,17 +102,18 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
 //    getting customer account balance
     @Override
-    public BankRespons balanceEnquiry(EnquiryDto enquiryDto) {
+    public ResponseEntity<BankRespons> balanceEnquiry(EnquiryDto enquiryDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
         if (!isAccountExist){
-            return BankRespons.builder()
+            BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
                     .accountInfo(null)
                     .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
         }
         User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
-        return BankRespons.builder()
+        BankRespons bankRespons = BankRespons.builder()
                 .responseCode(AccountUtilities.ACCOUNT_FOUND_CODE)
                 .responseMessage(AccountUtilities.ACCOUNT_FOUND_MESSAGE)
                 .accountInfo(AccountInfo.builder()
@@ -120,19 +121,39 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                         .accountName(foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme())
                         .build())
                 .build();
+        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
     }
 
 
     @Override
-    public String nameEnquiry(EnquiryDto enquiryDto) {
+    public ResponseEntity<BankRespons> nameEnquiry(EnquiryDto enquiryDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
-        if (!isAccountExist){
-            return AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE;
+        if (!isAccountExist) {
+            BankRespons bankRespons = new BankRespons(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE, null);
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
         }
-        User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
-        return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme();
 
+        User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
+        String accountName = foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme();
+//        BankRespons bankRespons = new BankRespons("Account found", accountName);
+        BankRespons bankRespons = BankRespons.builder()
+                .responseCode(AccountUtilities.ACCOUNT_NAME_FOUND_CODE)
+                .responseMessage(AccountUtilities.ACCOUNT_NAME_FOUND_MESSAGE)
+                .accountInfo(AccountInfo.builder()
+                        .accountName(accountName)
+                        .build())
+                .build();
+        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
     }
+//    public String nameEnquiry(EnquiryDto enquiryDto) {
+//        boolean isAccountExist = uSerRepository.existsByAccountNumber(enquiryDto.getAccountNumber());
+//        if (!isAccountExist){
+//            return AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE;
+//        }
+//        User foundUser = uSerRepository.findByAccountNumber(enquiryDto.getAccountNumber());
+//        return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherNme();
+//
+//    }
 
     @Override
     public ResponseEntity<BankRespons> creditAccount(TransactionDto transactionDto) {
@@ -143,7 +164,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
                     .accountInfo(null)
                     .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
         }
         User userToCredit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());
         userToCredit.setAccountBalance(userToCredit.getAccountBalance().add(transactionDto.getAmount()));
@@ -170,7 +191,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
                     .accountInfo(null)
                     .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
         }
 
         User userToDebit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());

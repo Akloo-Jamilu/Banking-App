@@ -29,13 +29,13 @@ public class UserController {
 
 //    get user account balance
     @GetMapping("balanceEnquiry")
-    public BankRespons balanceEnquiry(@RequestBody EnquiryDto enquiryDto){
+    public ResponseEntity<BankRespons> balanceEnquiry(@RequestBody EnquiryDto enquiryDto){
         return userServiceRepository.balanceEnquiry(enquiryDto);
     }
 
 //    get user account name
     @GetMapping("nameEnquiry")
-    public String nameEnquiry(@RequestBody EnquiryDto enquiryDto){
+    public ResponseEntity<BankRespons> nameEnquiry(@RequestBody EnquiryDto enquiryDto) {
         return userServiceRepository.nameEnquiry(enquiryDto);
     }
 

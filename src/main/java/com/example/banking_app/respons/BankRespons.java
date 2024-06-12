@@ -13,4 +13,7 @@ public class BankRespons {
     private String responseCode;
     private String responseMessage;
     private AccountInfo accountInfo;
+
+    public BankRespons(String accountNotExistMessage, Object o) {
+    }
 }
