@@ -135,20 +135,21 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
     }
 
     @Override
-    public BankRespons creditAccount(TransactionDto transactionDto) {
+    public ResponseEntity<BankRespons> creditAccount(TransactionDto transactionDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(transactionDto.getAccountNumber());
         if (!isAccountExist){
-            return BankRespons.builder()
+            BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
                     .accountInfo(null)
                     .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
         }
         User userToCredit = uSerRepository.findByAccountNumber(transactionDto.getAccountNumber());
         userToCredit.setAccountBalance(userToCredit.getAccountBalance().add(transactionDto.getAmount()));
         uSerRepository.save(userToCredit);
 
-        return BankRespons.builder()
+        BankRespons bankRespons = BankRespons.builder()
                 .responseCode(AccountUtilities.ACCOUNT_CREDITED_CODE)
                 .responseMessage(AccountUtilities.ACCOUNT_CREDITED_MESSAGE)
                 .accountInfo(AccountInfo.builder()
@@ -157,6 +158,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                         .accountNumber(userToCredit.getAccountNumber())
                         .build())
                 .build();
+        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
     }
 
 //    @Override

@@ -41,7 +41,7 @@ public class UserController {
 
 //    credit customer account
     @PostMapping("credit")
-    public BankRespons creditAccount(@RequestBody TransactionDto transactionDto){
+    public ResponseEntity<BankRespons> creditAccount(@RequestBody TransactionDto transactionDto){
         return userServiceRepository.creditAccount(transactionDto);
     }
 
