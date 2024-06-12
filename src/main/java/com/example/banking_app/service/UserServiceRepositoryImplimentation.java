@@ -184,6 +184,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .accountInfo(AccountInfo.builder()
                             .accountNumber(transactionDto.getAccountNumber())
                             .accountName(userToDebit.getFirstName() + " " + userToDebit.getLastName() + " " + userToDebit.getOtherNme())
+                            .accountBalance(userToDebit.getAccountBalance())
                             .build())
                     .build();
         }
