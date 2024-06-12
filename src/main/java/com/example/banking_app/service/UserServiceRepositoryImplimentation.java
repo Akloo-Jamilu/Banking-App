@@ -146,8 +146,8 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         uSerRepository.save(userToCredit);
 
         return BankRespons.builder()
-                .responseCode(AccountUtilities.ACCOUNT_CREDIT_CODE)
-                .responseMessage(AccountUtilities.ACCOUNT_CREDIT_MESSAGE)
+                .responseCode(AccountUtilities.ACCOUNT_CREDITED_CODE)
+                .responseMessage(AccountUtilities.ACCOUNT_CREDITED_MESSAGE)
                 .accountInfo(AccountInfo.builder()
                         .accountName(userToCredit.getFirstName() + " " + userToCredit.getLastName() + " " + userToCredit.getOtherNme())
                         .accountBalance(userToCredit.getAccountBalance())

@@ -43,4 +43,9 @@ public class UserController {
     public BankRespons creditAccount(@RequestBody TransactionDto transactionDto){
         return userServiceRepository.creditAccount(transactionDto);
     }
+
+    @PostMapping("debit")
+    public BankRespons debitAccount(@RequestBody TransactionDto transactionDto){
+        return userServiceRepository.debitACCount(transactionDto);
+    }
 }
