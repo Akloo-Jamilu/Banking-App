@@ -222,6 +222,24 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
     @Override
     public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
         boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
+        boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
 
+        if (! isDestinationAccountExist){
+            BankRespons bankRespons = BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+        }
+
+        if (! isSourceAccountExist){
+            BankRespons bankRespons = BankRespons.builder()
+                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+        }
     }
 }
