@@ -1,8 +1,5 @@
 package com.example.banking_app.service;
-import com.example.banking_app.dto.EmailDetails;
-import com.example.banking_app.dto.EnquiryDto;
-import com.example.banking_app.dto.TransactionDto;
-import com.example.banking_app.dto.UserDto;
+import com.example.banking_app.dto.*;
 import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.USerRepository;
 import com.example.banking_app.respons.AccountInfo;
@@ -220,5 +217,11 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .build();
             return new ResponseEntity<>(bankRespons, HttpStatus.OK);
         }
+    }
+
+    @Override
+    public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
+        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
+
     }
 }
