@@ -182,7 +182,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         return new ResponseEntity<>(bankRespons, HttpStatus.OK);
     }
 
-//    @Override
+    @Override
     public ResponseEntity<BankRespons> debitACCount(TransactionDto transactionDto) {
         boolean isAccountExist = uSerRepository.existsByAccountNumber(transactionDto.getAccountNumber());
         if (!isAccountExist) {
