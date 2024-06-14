@@ -224,7 +224,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 //        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
         boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
 
-        if (! isDestinationAccountExist){
+        if (!isDestinationAccountExist) {
             BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
@@ -234,7 +234,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         }
 
         User sourceAccount = uSerRepository.findByAccountNumber(transferDto.getSourceAccount());
-        if (transferDto.getAmount().compareTo(sourceAccount.getAccountBalance()) > 0){
+        if (transferDto.getAmount().compareTo(sourceAccount.getAccountBalance()) > 0) {
             BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
                     .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
@@ -247,10 +247,10 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         String sourceUserName = sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + " " + sourceAccount.getOtherNme();
         uSerRepository.save(sourceAccount);
         EmailDetails debitAlert = EmailDetails.builder()
-                .subject("Debit Alert")
+                .subject("Debit Notification")
                 .recipient(sourceAccount.getEmail())
-                .messageBody("the sum of " + transferDto.getAmount() +"has been deducted from your account, your current balance is"
-                + sourceAccount.getAccountBalance())
+                .messageBody("the sum of " + transferDto.getAmount() + "has been deducted from your account, your current balance is"
+                        + sourceAccount.getAccountBalance())
 
                 .build();
         emailServiceRepository.sendEmailAlert(debitAlert);
@@ -258,13 +258,20 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         User destinationAccountUser = uSerRepository.findByAccountNumber(transferDto.getDestinationAccount());
         destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(transferDto.getAmount()));
         String RecipientUserName = destinationAccountUser.getFirstName() + " " + destinationAccountUser.getLastName() + " " + destinationAccountUser.getOtherNme();
-
+        uSerRepository.save(destinationAccountUser);
         EmailDetails creditAlert = EmailDetails.builder()
-                .subject("Debit Alert")
-                .recipient(sourceAccount.getEmail())
-                .messageBody("the sum of " + transferDto.getAmount() +"has been credited to your account from" + sourceAccount.ge your current balance is"
-                        + sourceAccount.getAccountBalance())
-
+                .subject("Credit Notification")
+                .recipient(destinationAccountUser.getEmail())
+                .messageBody("the sum of " + " " + transferDto.getAmount() + " " +  "has been credited to your account from" + " " +  sourceUserName + "ge your current balance is"
+                        + " " +  sourceAccount.getAccountBalance())
                 .build();
         emailServiceRepository.sendEmailAlert(creditAlert);
+
+        BankRespons bankRespons = BankRespons.builder()
+                .responseCode(AccountUtilities.TRANSFER_SUCCESSFUL_CODE)
+                .responseMessage(AccountUtilities.TRANSFER_SUCCESSFUL_MESSAGE)
+                .accountInfo(null)
+                .build();
+        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
+    }
 }

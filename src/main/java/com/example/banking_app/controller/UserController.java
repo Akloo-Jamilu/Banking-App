@@ -2,6 +2,7 @@ package com.example.banking_app.controller;
 
 import com.example.banking_app.dto.EnquiryDto;
 import com.example.banking_app.dto.TransactionDto;
+import com.example.banking_app.dto.TransferDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
@@ -48,5 +49,10 @@ public class UserController {
     @PostMapping("debit")
     public ResponseEntity<BankRespons> debitAccount(@RequestBody TransactionDto transactionDto){
         return userServiceRepository.debitACCount(transactionDto);
+    }
+
+    @PostMapping("transfer")
+    public ResponseEntity<BankRespons> transfer(@RequestBody TransferDto transferDto){
+        return userServiceRepository.transfer(transferDto);
     }
 }

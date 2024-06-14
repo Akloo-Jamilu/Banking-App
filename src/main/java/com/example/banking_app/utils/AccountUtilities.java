@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 import java.time.Year;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class AccountUtilities {
@@ -31,6 +30,8 @@ public class AccountUtilities {
 
     public static final String ACCOUNT_CREDITED_CODE = "ACCOUNT_CREDITED";
     public static final String ACCOUNT_CREDITED_MESSAGE = "Account credited successfully";
+    public static final String TRANSFER_SUCCESSFUL_CODE = "TRANSFER_SUCCESSFUL";
+    public static final String TRANSFER_SUCCESSFUL_MESSAGE = "Your Transfer was successful";
 
     private static final Map<String, HttpStatus> RESPONSE_CODE_TO_HTTP_STATUS_MAP = new HashMap<>();
 
@@ -43,6 +44,7 @@ public class AccountUtilities {
         RESPONSE_CODE_TO_HTTP_STATUS_MAP.put(ACCOUNT_CREDITED_CODE, HttpStatus.OK);
         RESPONSE_CODE_TO_HTTP_STATUS_MAP.put(ACCOUNT_FOUND_CODE, HttpStatus.OK);
         RESPONSE_CODE_TO_HTTP_STATUS_MAP.put(ACCOUNT_NAME_FOUND_CODE, HttpStatus.OK);
+        RESPONSE_CODE_TO_HTTP_STATUS_MAP.put(TRANSFER_SUCCESSFUL_CODE, HttpStatus.OK);
 
     }
 
