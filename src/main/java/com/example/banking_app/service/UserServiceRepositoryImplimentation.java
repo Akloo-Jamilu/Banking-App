@@ -221,7 +221,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     @Override
     public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
-        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
+//        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
         boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
 
         if (! isDestinationAccountExist){
@@ -233,13 +233,15 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
             return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
         }
 
-        if (! isSourceAccountExist){
+        User sourceAccount = uSerRepository.findByAccountNumber(transferDto.getSourceAccount());
+        if (transferDto.getAmount().compareTo(sourceAccount.getAccountBalance()) > 0){
             BankRespons bankRespons = BankRespons.builder()
-                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
-                    .responseMessage(AccountUtilities.ACCOUNT_NOT_EXIST_MESSAGE)
+                    .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
+                    .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
                     .accountInfo(null)
                     .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
         }
-    }
+
+        sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferDto.getAmount()));
 }
