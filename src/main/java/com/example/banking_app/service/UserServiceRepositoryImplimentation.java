@@ -244,4 +244,27 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         }
 
         sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferDto.getAmount()));
+        String sourceUserName = sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + " " + sourceAccount.getOtherNme();
+        uSerRepository.save(sourceAccount);
+        EmailDetails debitAlert = EmailDetails.builder()
+                .subject("Debit Alert")
+                .recipient(sourceAccount.getEmail())
+                .messageBody("the sum of " + transferDto.getAmount() +"has been deducted from your account, your current balance is"
+                + sourceAccount.getAccountBalance())
+
+                .build();
+        emailServiceRepository.sendEmailAlert(debitAlert);
+
+        User destinationAccountUser = uSerRepository.findByAccountNumber(transferDto.getDestinationAccount());
+        destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(transferDto.getAmount()));
+        String RecipientUserName = destinationAccountUser.getFirstName() + " " + destinationAccountUser.getLastName() + " " + destinationAccountUser.getOtherNme();
+
+        EmailDetails creditAlert = EmailDetails.builder()
+                .subject("Debit Alert")
+                .recipient(sourceAccount.getEmail())
+                .messageBody("the sum of " + transferDto.getAmount() +"has been credited to your account from" + sourceAccount.ge your current balance is"
+                        + sourceAccount.getAccountBalance())
+
+                .build();
+        emailServiceRepository.sendEmailAlert(creditAlert);
 }
