@@ -1,7 +1,8 @@
 package com.example.banking_app.service.servicesRepository;
 
-import com.example.banking_app.entity.Transaction;
+
+import com.example.banking_app.dto.TransactionRecordDto;
 
 public interface TransactionServiceRepository {
-    void saveTransaction(Transaction transaction);
+    void saveTransaction(TransactionRecordDto transactionRecordDto);
 }
