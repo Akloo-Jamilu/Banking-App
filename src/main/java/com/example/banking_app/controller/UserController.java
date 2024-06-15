@@ -6,12 +6,16 @@ import com.example.banking_app.dto.TransferDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "User Services APIs")
 public class UserController {
 
     @Autowired
@@ -23,6 +27,13 @@ public class UserController {
     }
 
 //    create customer end point
+    @Operation(
+            summary = "Creating a new customer to the application"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http Status 201 CREATED"
+    )
     @PostMapping
     public BankRespons createAccount(@RequestBody UserDto userDto){
         return userServiceRepository.createAccount(userDto);
