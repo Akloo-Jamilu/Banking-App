@@ -14,8 +14,9 @@ public class TransactionServiceRepositoryImplimentation implements TransactionSe
     @Override
     public void saveTransaction(TransactionRecordDto transactionRecordDto) {
         Transaction transaction = Transaction.builder()
-                .transactionType(transactionRecordDto.)
-                .transactionId(transactionRecordDto.)
+                .transactionType(transactionRecordDto.getTransactionType())
+                .accountNumber(transactionRecordDto.getAccountNumber())
+                .amount(transactionRecordDto.getAmount())
                 .build();
 
 
