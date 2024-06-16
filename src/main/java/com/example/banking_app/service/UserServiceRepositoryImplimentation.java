@@ -18,13 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Set;
 
 @Service
 public class UserServiceRepositoryImplimentation implements UserServiceRepository {
@@ -303,9 +300,18 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
                     .messageBody("The sum of " + transferAmount + " has been credited to your account from " + sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + ". Your current balance is " + destinationAccountUser.getAccountBalance())
                     .build();
             emailServiceRepository.sendEmailAlert(creditAlert);
+
+            //        save transaction on transaction table
+            TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
+                    .accountNumber(destinationAccountUser.getAccountNumber())
+                    .transactionType("Debit Alert")
+                    .amount(transferDto.getAmount())
+                    .build();
+            transactionServiceRepository.saveTransaction(transactionRecordDto);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Transaction failed. Please try again.");
         }
+
 
         // Build and return the success response
         BankRespons bankRespons = BankRespons.builder()
