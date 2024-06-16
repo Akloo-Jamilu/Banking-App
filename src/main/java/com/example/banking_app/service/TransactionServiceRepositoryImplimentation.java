@@ -17,7 +17,11 @@ public class TransactionServiceRepositoryImplimentation implements TransactionSe
                 .transactionType(transactionRecordDto.getTransactionType())
                 .accountNumber(transactionRecordDto.getAccountNumber())
                 .amount(transactionRecordDto.getAmount())
+                .status("Success")
                 .build();
+
+        transactionRepository.save(transaction);
+        System.out.println("Transaction save successfully");
 
 
     }
