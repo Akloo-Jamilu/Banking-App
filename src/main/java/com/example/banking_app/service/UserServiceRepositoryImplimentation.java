@@ -5,6 +5,7 @@ import com.example.banking_app.repository.USerRepository;
 import com.example.banking_app.respons.AccountInfo;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.EmailServiceRepository;
+import com.example.banking_app.service.servicesRepository.TransactionServiceRepository;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import com.example.banking_app.utils.AccountUtilities;
 import com.example.banking_app.utils.UserValidations;
@@ -35,6 +36,9 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     @Autowired
     EmailServiceRepository emailServiceRepository;
+
+    @Autowired
+    TransactionServiceRepository transactionServiceRepository;
 
     @Autowired
     public UserServiceRepositoryImplimentation(USerRepository uSerRepository, Validator validator) {
@@ -171,6 +175,14 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         userToCredit.setAccountBalance(userToCredit.getAccountBalance().add(transactionDto.getAmount()));
         uSerRepository.save(userToCredit);
 
+//        save transaction on transaction table
+        TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
+                .accountNumber(userToCredit.getAccountNumber())
+                .transactionType("Credit Alert")
+                .amount(transactionDto.getAmount())
+                .build();
+        transactionServiceRepository.saveTransaction(transactionRecordDto);
+
         BankRespons bankRespons = BankRespons.builder()
                 .responseCode(AccountUtilities.ACCOUNT_CREDITED_CODE)
                 .responseMessage(AccountUtilities.ACCOUNT_CREDITED_MESSAGE)
@@ -209,6 +221,14 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
         } else {
             userToDebit.setAccountBalance(userToDebit.getAccountBalance().subtract(transactionDto.getAmount()));
             uSerRepository.save(userToDebit);
+
+            //        save transaction on transaction table
+            TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
+                    .accountNumber(userToDebit.getAccountNumber())
+                    .transactionType("Debit Alert")
+                    .amount(transactionDto.getAmount())
+                    .build();
+            transactionServiceRepository.saveTransaction(transactionRecordDto);
 
             BankRespons bankRespons = BankRespons.builder()
                     .responseCode(AccountUtilities.ACCOUNT_DEBITED_CODE)
