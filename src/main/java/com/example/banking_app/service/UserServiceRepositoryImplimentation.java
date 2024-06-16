@@ -14,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,6 +33,7 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
     private final USerRepository uSerRepository;
     private final UserValidations userValidations;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceRepositoryImplimentation.class);
 
 
     @Autowired
@@ -242,83 +247,170 @@ public class UserServiceRepositoryImplimentation implements UserServiceRepositor
 
     @Override
     @Transactional // Ensures atomicity
-    public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
-        // Check if destination account exists
-        boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
-        if (!isDestinationAccountExist) {
-            BankRespons bankRespons = BankRespons.builder()
-                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
-                    .responseMessage("Destination account number " + transferDto.getDestinationAccount() + " does not exist.")
-                    .accountInfo(null)
-                    .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+//    public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
+//        // Check if destination account exists
+//        boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
+//        if (!isDestinationAccountExist) {
+//            BankRespons bankRespons = BankRespons.builder()
+//                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+//                    .responseMessage("Destination account number " + transferDto.getDestinationAccount() + " does not exist.")
+//                    .accountInfo(null)
+//                    .build();
+//            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+//        }
+//
+//        // Check if source account exists
+//        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
+//        if (!isSourceAccountExist) {
+//            BankRespons bankRespons = BankRespons.builder()
+//                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+//                    .responseMessage("Source account number " + transferDto.getSourceAccount() + " does not exist.")
+//                    .accountInfo(null)
+//                    .build();
+//            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+//        }
+//
+//        User sourceAccount = uSerRepository.findByAccountNumber(transferDto.getSourceAccount());
+//        BigDecimal transferAmount = transferDto.getAmount();
+//
+//        // Check if the source account has sufficient balance
+//        if (transferAmount.compareTo(sourceAccount.getAccountBalance()) > 0) {
+//            BankRespons bankRespons = BankRespons.builder()
+//                    .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
+//                    .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
+//                    .accountInfo(null)
+//                    .build();
+//            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
+//        }
+//
+//        // Perform the debit and credit operations atomically
+//        try {
+//            // Debit the source account
+//            sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferAmount));
+//            uSerRepository.save(sourceAccount);
+//            EmailDetails debitAlert = EmailDetails.builder()
+//                    .subject("Debit Notification")
+//                    .recipient(sourceAccount.getEmail())
+//                    .messageBody("The sum of " + transferAmount + " has been deducted from your account. Your current balance is " + sourceAccount.getAccountBalance())
+//                    .build();
+//            emailServiceRepository.sendEmailAlert(debitAlert);
+//
+//            // Credit the destination account
+//            User destinationAccountUser = uSerRepository.findByAccountNumber(transferDto.getDestinationAccount());
+//            destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(transferAmount));
+//            uSerRepository.save(destinationAccountUser);
+//            EmailDetails creditAlert = EmailDetails.builder()
+//                    .subject("Credit Notification")
+//                    .recipient(destinationAccountUser.getEmail())
+//                    .messageBody("The sum of " + transferAmount + " has been credited to your account from " + sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + ". Your current balance is " + destinationAccountUser.getAccountBalance())
+//                    .build();
+//            emailServiceRepository.sendEmailAlert(creditAlert);
+//
+//            //        save transaction on transaction table
+//            TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
+//                    .accountNumber(destinationAccountUser.getAccountNumber())
+//                    .transactionType("Debit Alert")
+//                    .amount(transferDto.getAmount())
+//                    .build();
+//            transactionServiceRepository.saveTransaction(transactionRecordDto);
+//        } catch (Exception e) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Transaction failed. Please try again.");
+//        }
+//
+//
+//        // Build and return the success response
+//        BankRespons bankRespons = BankRespons.builder()
+//                .responseCode(AccountUtilities.TRANSFER_SUCCESSFUL_CODE)
+//                .responseMessage(AccountUtilities.TRANSFER_SUCCESSFUL_MESSAGE)
+//                .accountInfo(null)
+//                .build();
+//        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
+//    }
+
+
+
+
+
+
+        public ResponseEntity<BankRespons> transfer(TransferDto transferDto) {
+            // Check if destination account exists
+            boolean isDestinationAccountExist = uSerRepository.existsByAccountNumber(transferDto.getDestinationAccount());
+            if (!isDestinationAccountExist) {
+                BankRespons bankRespons = BankRespons.builder()
+                        .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                        .responseMessage("Destination account number " + transferDto.getDestinationAccount() + " does not exist.")
+                        .accountInfo(null)
+                        .build();
+                return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+            }
+
+            // Check if source account exists
+            boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
+            if (!isSourceAccountExist) {
+                BankRespons bankRespons = BankRespons.builder()
+                        .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
+                        .responseMessage("Source account number " + transferDto.getSourceAccount() + " does not exist.")
+                        .accountInfo(null)
+                        .build();
+                return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
+            }
+
+            User sourceAccount = uSerRepository.findByAccountNumber(transferDto.getSourceAccount());
+            BigDecimal transferAmount = transferDto.getAmount();
+
+            // Check if the source account has sufficient balance
+            if (transferAmount.compareTo(sourceAccount.getAccountBalance()) > 0) {
+                BankRespons bankRespons = BankRespons.builder()
+                        .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
+                        .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
+                        .accountInfo(null)
+                        .build();
+                return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
+            }
+
+            // Perform the debit and credit operations atomically
+            try {
+                // Debit the source account
+                sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferAmount));
+                uSerRepository.save(sourceAccount);
+
+                EmailDetails debitAlert = EmailDetails.builder()
+                        .subject("Debit Notification")
+                        .recipient(sourceAccount.getEmail())
+                        .messageBody("The sum of " + transferAmount + " has been deducted from your account. Your current balance is " + sourceAccount.getAccountBalance())
+                        .build();
+//                emailServiceRepository.sendEmailAlert(debitAlert);
+
+                // Credit the destination account
+                User destinationAccountUser = uSerRepository.findByAccountNumber(transferDto.getDestinationAccount());
+                destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(transferAmount));
+                uSerRepository.save(destinationAccountUser);
+
+                EmailDetails creditAlert = EmailDetails.builder()
+                        .subject("Credit Notification")
+                        .recipient(destinationAccountUser.getEmail())
+                        .messageBody("The sum of " + transferAmount + " has been credited to your account from " + sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + ". Your current balance is " + destinationAccountUser.getAccountBalance())
+                        .build();
+//                emailServiceRepository.sendEmailAlert(creditAlert);
+
+                // Save transaction record
+                TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
+                        .accountNumber(destinationAccountUser.getAccountNumber())
+                        .transactionType("Transfer")
+                        .amount(transferDto.getAmount())
+                        .build();
+                transactionServiceRepository.saveTransaction(transactionRecordDto);
+
+                BankRespons bankRespons = BankRespons.builder()
+                        .responseCode(AccountUtilities.TRANSFER_SUCCESSFUL_CODE)
+                        .responseMessage(AccountUtilities.TRANSFER_SUCCESSFUL_MESSAGE)
+                        .accountInfo(null)
+                        .build();
+                return new ResponseEntity<>(bankRespons, HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Transaction failed", e);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Transaction failed. Please try again.");
+            }
         }
-
-        // Check if source account exists
-        boolean isSourceAccountExist = uSerRepository.existsByAccountNumber(transferDto.getSourceAccount());
-        if (!isSourceAccountExist) {
-            BankRespons bankRespons = BankRespons.builder()
-                    .responseCode(AccountUtilities.ACCOUNT_NOT_EXIST_CODE)
-                    .responseMessage("Source account number " + transferDto.getSourceAccount() + " does not exist.")
-                    .accountInfo(null)
-                    .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.NOT_FOUND);
-        }
-
-        User sourceAccount = uSerRepository.findByAccountNumber(transferDto.getSourceAccount());
-        BigDecimal transferAmount = transferDto.getAmount();
-
-        // Check if the source account has sufficient balance
-        if (transferAmount.compareTo(sourceAccount.getAccountBalance()) > 0) {
-            BankRespons bankRespons = BankRespons.builder()
-                    .responseCode(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_CODE)
-                    .responseMessage(AccountUtilities.ACCOUNT_INSUFFICIENT_BALANCE_MESSAGE)
-                    .accountInfo(null)
-                    .build();
-            return new ResponseEntity<>(bankRespons, HttpStatus.BAD_REQUEST);
-        }
-
-        // Perform the debit and credit operations atomically
-        try {
-            // Debit the source account
-            sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(transferAmount));
-            uSerRepository.save(sourceAccount);
-            EmailDetails debitAlert = EmailDetails.builder()
-                    .subject("Debit Notification")
-                    .recipient(sourceAccount.getEmail())
-                    .messageBody("The sum of " + transferAmount + " has been deducted from your account. Your current balance is " + sourceAccount.getAccountBalance())
-                    .build();
-            emailServiceRepository.sendEmailAlert(debitAlert);
-
-            // Credit the destination account
-            User destinationAccountUser = uSerRepository.findByAccountNumber(transferDto.getDestinationAccount());
-            destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(transferAmount));
-            uSerRepository.save(destinationAccountUser);
-            EmailDetails creditAlert = EmailDetails.builder()
-                    .subject("Credit Notification")
-                    .recipient(destinationAccountUser.getEmail())
-                    .messageBody("The sum of " + transferAmount + " has been credited to your account from " + sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + ". Your current balance is " + destinationAccountUser.getAccountBalance())
-                    .build();
-            emailServiceRepository.sendEmailAlert(creditAlert);
-
-            //        save transaction on transaction table
-            TransactionRecordDto transactionRecordDto = TransactionRecordDto.builder()
-                    .accountNumber(destinationAccountUser.getAccountNumber())
-                    .transactionType("Debit Alert")
-                    .amount(transferDto.getAmount())
-                    .build();
-            transactionServiceRepository.saveTransaction(transactionRecordDto);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Transaction failed. Please try again.");
-        }
-
-
-        // Build and return the success response
-        BankRespons bankRespons = BankRespons.builder()
-                .responseCode(AccountUtilities.TRANSFER_SUCCESSFUL_CODE)
-                .responseMessage(AccountUtilities.TRANSFER_SUCCESSFUL_MESSAGE)
-                .accountInfo(null)
-                .build();
-        return new ResponseEntity<>(bankRespons, HttpStatus.OK);
     }
-}
+
