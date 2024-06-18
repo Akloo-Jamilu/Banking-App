@@ -4,6 +4,7 @@ import com.example.banking_app.dto.EnquiryDto;
 import com.example.banking_app.dto.TransactionDto;
 import com.example.banking_app.dto.TransferDto;
 import com.example.banking_app.dto.UserDto;
+import com.example.banking_app.entity.Transaction;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -65,5 +68,10 @@ public class UserController {
     @PostMapping("transfer")
     public ResponseEntity<BankRespons> transfer(@RequestBody TransferDto transferDto){
         return userServiceRepository.transfer(transferDto);
+    }
+
+    @GetMapping("statement")
+    public List<Transaction> generateBankStatement(@RequestParam String accountNumber, @RequestParam String startDate, @RequestParam String endDate){
+
     }
 }
