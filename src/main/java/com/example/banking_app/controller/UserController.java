@@ -6,6 +6,7 @@ import com.example.banking_app.dto.TransferDto;
 import com.example.banking_app.dto.UserDto;
 import com.example.banking_app.entity.Transaction;
 import com.example.banking_app.respons.BankRespons;
+import com.example.banking_app.service.BankStatementServiceRepositoryImplementation;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,11 +22,19 @@ import java.util.List;
 @Tag(name = "User Services APIs")
 public class UserController {
 
+
+    private BankStatementServiceRepositoryImplementation bankStatementServiceRepositoryImplementation;
+
+    @Autowired
+    public void BankStatementController(BankStatementServiceRepositoryImplementation bankStatementServiceRepositoryImplementation) {
+        this.bankStatementServiceRepositoryImplementation = bankStatementServiceRepositoryImplementation;
+    }
     @Autowired
     UserServiceRepository userServiceRepository;
 
     @Autowired
-    public UserController(UserServiceRepository userServiceRepository) {
+    public UserController(BankStatementServiceRepositoryImplementation bankStatementServiceRepositoryImplementation, UserServiceRepository userServiceRepository) {
+        this.bankStatementServiceRepositoryImplementation = bankStatementServiceRepositoryImplementation;
         this.userServiceRepository = userServiceRepository;
     }
 
@@ -72,6 +81,6 @@ public class UserController {
 
     @GetMapping("statement")
     public List<Transaction> generateBankStatement(@RequestParam String accountNumber, @RequestParam String startDate, @RequestParam String endDate){
-
+return bankStatementServiceRepositoryImplementation.generateStatement(accountNumber, startDate, endDate);
     }
 }

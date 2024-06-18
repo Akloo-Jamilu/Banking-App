@@ -17,8 +17,9 @@ public class BankStatementServiceRepositoryImplementation {
     private TransactionRepository transactionRepository;
 
     public List<Transaction> generateStatement(String accountNumber, String startDate, String endDate ){
-        LocalDate startingFrom = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
-        LocalDate endingIn = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        // Trim the date strings to remove any leading or trailing whitespace
+        LocalDate startingFrom = LocalDate.parse(startDate.trim(), DateTimeFormatter.ISO_DATE);
+        LocalDate endingIn = LocalDate.parse(endDate.trim(), DateTimeFormatter.ISO_DATE);
         LocalDateTime startOfDay = startingFrom.atStartOfDay();
         LocalDateTime endOfDay = endingIn.plusDays(1).atStartOfDay().minusSeconds(1);
 
