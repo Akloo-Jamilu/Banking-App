@@ -5,9 +5,13 @@ import com.example.banking_app.repository.TransactionRepository;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +20,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class BankStatementServiceRepositoryImplementation {
     private TransactionRepository transactionRepository;
     private static final String FILE = "C:\\Users\\Admin\\Document\\MyStatement.pdf";
@@ -40,6 +45,10 @@ public class BankStatementServiceRepositoryImplementation {
     private void designStatement(List<Transaction> transactions){
         Rectangle rectangle = new Rectangle(PageSize.A4);
         Document document = new Document(rectangle);
+        log.info("setting paper size");
+        OutputStream outputStream = new FileOutputStream(FILE);
+        PdfWriter.getInstance(document , outputStream);
+
     }
 
 
