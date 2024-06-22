@@ -2,6 +2,7 @@ package com.example.banking_app.service;
 
 import com.example.banking_app.entity.Transaction;
 import com.example.banking_app.repository.TransactionRepository;
+import com.example.banking_app.repository.USerRepository;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -24,6 +25,7 @@ import java.util.List;
 @Slf4j
 public class BankStatementServiceRepositoryImplementation {
     private TransactionRepository transactionRepository;
+    private USerRepository uSerRepository;
     private static final String FILE = "C:\\Users\\Admin\\Document\\MyStatement.pdf";
 
     public List<Transaction> generateStatement(String accountNumber, String startDate, String endDate ) throws DocumentException, FileNotFoundException {
@@ -54,7 +56,13 @@ public class BankStatementServiceRepositoryImplementation {
         bankHeadingTable.addCell(bankAddress);
 
         PdfPTable statementInfoSection = new PdfPTable(2);
-        PdfPCell customerInfo = new PdfPCell( new Phrase("Start" +" "+startOfDay ))
+        PdfPCell customerInfo = new PdfPCell( new Phrase("Start Date" +" "+startOfDay ));
+        customerInfo.setBorder(0);
+        PdfPCell statement = new PdfPCell(new Phrase("STATEMENT OF ACCOUNT"));
+        statement.setBorder(0);
+        PdfPCell stopDate = new PdfPCell(new Phrase("End Date" +" "+endOfDay ));
+        stopDate.setBorder(0);
+
 
 
         return transactionRepository.findAll().stream()
