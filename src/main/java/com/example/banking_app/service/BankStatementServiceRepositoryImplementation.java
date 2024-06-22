@@ -36,6 +36,15 @@ public class BankStatementServiceRepositoryImplementation {
         LocalDateTime startOfDay = startingFrom.atStartOfDay();
         LocalDateTime endOfDay = endingIn.plusDays(1).atStartOfDay().minusSeconds(1);
 
+        List<Transaction> transactionList = transactionRepository.findAll().stream()
+//                .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
+//                .filter(transaction -> transaction.getCreatedAt().isEqual(startOfDay)).
+//                filter(transaction -> transaction.getCreatedAt().isEqual(endOfDay)).toList();
+
+                .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
+                .filter(transaction -> !transaction.getCreatedAt().isBefore(startOfDay) && !transaction.getCreatedAt().isAfter(endOfDay))
+                .toList();
+
         User user = uSerRepository.findByAccountNumber(accountNumber);
         String customerName = user.getFirstName()+ " " + user.getLastName()+ " " + user.getOtherNme();
 
@@ -81,19 +90,15 @@ public class BankStatementServiceRepositoryImplementation {
         PdfPCell transactionAmount = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
         transactionAmount.setBackgroundColor(BaseColor.BLUE);
         transactionAmount.setBorder(0);
+        PdfPCell status = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
+        status.setBackgroundColor(BaseColor.BLUE);
+        status.setBorder(0);
 
 
 
 
 
-        return transactionRepository.findAll().stream()
-//                .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
-//                .filter(transaction -> transaction.getCreatedAt().isEqual(startOfDay)).
-//                filter(transaction -> transaction.getCreatedAt().isEqual(endOfDay)).toList();
-
-                .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
-                .filter(transaction -> !transaction.getCreatedAt().isBefore(startOfDay) && !transaction.getCreatedAt().isAfter(endOfDay))
-                .toList();
+        return transactionList;
     }
 
 
