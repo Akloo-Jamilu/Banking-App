@@ -1,6 +1,7 @@
 package com.example.banking_app.service;
 
 import com.example.banking_app.entity.Transaction;
+import com.example.banking_app.entity.User;
 import com.example.banking_app.repository.TransactionRepository;
 import com.example.banking_app.repository.USerRepository;
 import com.itextpdf.text.*;
@@ -35,7 +36,8 @@ public class BankStatementServiceRepositoryImplementation {
         LocalDateTime startOfDay = startingFrom.atStartOfDay();
         LocalDateTime endOfDay = endingIn.plusDays(1).atStartOfDay().minusSeconds(1);
 
-
+        User user = uSerRepository.findByAccountNumber(accountNumber);
+        String customerName = user.getFirstName()+ " " + user.getLastName()+ " " + user.getOtherNme();
 
         Rectangle rectangle = new Rectangle(PageSize.A4);
         Document document = new Document(rectangle);
@@ -62,6 +64,14 @@ public class BankStatementServiceRepositoryImplementation {
         statement.setBorder(0);
         PdfPCell stopDate = new PdfPCell(new Phrase("End Date" +" "+endOfDay ));
         stopDate.setBorder(0);
+
+        PdfPCell name = new PdfPCell(new Phrase("Customer Name" + " "+customerName));
+        name.setBorder(0);
+
+        PdfPCell address = new PdfPCell(new Phrase("Customer Address" + " " + user.getAddress()));
+        address.setBorder(0);
+
+
 
 
 
