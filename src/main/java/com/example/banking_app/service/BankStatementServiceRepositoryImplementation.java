@@ -71,6 +71,17 @@ public class BankStatementServiceRepositoryImplementation {
         PdfPCell address = new PdfPCell(new Phrase("Customer Address" + " " + user.getAddress()));
         address.setBorder(0);
 
+        PdfPTable transactionTable = new PdfPTable(4);
+        PdfPCell date = new PdfPCell(new Phrase("DATE"));
+        date.setBackgroundColor(BaseColor.BLUE);
+        date.setBorder(0);
+        PdfPCell transactionType = new PdfPCell(new Phrase("TRANSACTION TYPE"));
+        transactionType.setBackgroundColor(BaseColor.BLUE);
+        transactionType.setBorder(0);
+        PdfPCell transactionAmount = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
+        transactionAmount.setBackgroundColor(BaseColor.BLUE);
+        transactionAmount.setBorder(0);
+
 
 
 
