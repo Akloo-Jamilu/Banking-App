@@ -73,10 +73,9 @@ public class BankStatementServiceRepositoryImplementation {
         statement.setBorder(0);
         PdfPCell stopDate = new PdfPCell(new Phrase("End Date" +" "+endOfDay ));
         stopDate.setBorder(0);
-
         PdfPCell name = new PdfPCell(new Phrase("Customer Name" + " "+customerName));
         name.setBorder(0);
-
+        PdfPCell space = new PdfPCell();
         PdfPCell address = new PdfPCell(new Phrase("Customer Address" + " " + user.getAddress()));
         address.setBorder(0);
 
@@ -93,6 +92,18 @@ public class BankStatementServiceRepositoryImplementation {
         PdfPCell status = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
         status.setBackgroundColor(BaseColor.BLUE);
         status.setBorder(0);
+
+        transactionList.forEach(transaction -> {
+            transactionTable.addCell(new Phrase(transaction.getCreatedAt().toString()));
+            transactionTable.addCell(new Phrase(transaction.getTransactionType()));
+            transactionTable.addCell(new Phrase(transaction.getAmount().toString()));
+            transactionTable.addCell(new Phrase(transaction.getStatus()));
+        });
+        statementInfoSection.addCell(customerInfo);
+        statementInfoSection.addCell(statement);
+        statementInfoSection.addCell(stopDate);
+        statementInfoSection.addCell(name);
+        statementInfoSection.addCell(space);
 
 
 
