@@ -8,6 +8,7 @@ import com.example.banking_app.entity.Transaction;
 import com.example.banking_app.respons.BankRespons;
 import com.example.banking_app.service.BankStatementServiceRepositoryImplementation;
 import com.example.banking_app.service.servicesRepository.UserServiceRepository;
+import com.itextpdf.text.DocumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -80,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("statement")
-    public List<Transaction> generateBankStatement(@RequestParam String accountNumber, @RequestParam String startDate, @RequestParam String endDate){
+    public List<Transaction> generateBankStatement(@RequestParam String accountNumber, @RequestParam String startDate, @RequestParam String endDate) throws DocumentException, FileNotFoundException {
 return bankStatementServiceRepositoryImplementation.generateStatement(accountNumber, startDate, endDate);
     }
 }

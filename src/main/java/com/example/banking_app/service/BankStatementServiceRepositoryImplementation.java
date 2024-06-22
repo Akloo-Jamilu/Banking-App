@@ -27,7 +27,7 @@ import java.util.List;
 public class BankStatementServiceRepositoryImplementation {
     private TransactionRepository transactionRepository;
     private USerRepository uSerRepository;
-    private static final String FILE = "C:\\Users\\Admin\\Document\\MyStatement.pdf";
+    private static final String FILE = "C:\\Users\\USER\\Documents\\MyStatement.pdf";
 
     public List<Transaction> generateStatement(String accountNumber, String startDate, String endDate ) throws DocumentException, FileNotFoundException {
         // Trim the date strings to remove any leading or trailing whitespace
@@ -56,42 +56,53 @@ public class BankStatementServiceRepositoryImplementation {
         document.open();
 
         PdfPTable bankHeadingTable = new PdfPTable(1);
-        PdfPCell bankName = new PdfPCell(new Phrase("Banking Application"));
-        bankName.setBorder(0);
-        bankName.setBackgroundColor(BaseColor.BLUE);
-        bankName.setPadding(20f);
+            PdfPCell bankName = new PdfPCell(new Phrase("Banking Application"));
+            bankName.setBorder(0);
+            bankName.setBackgroundColor(BaseColor.BLUE);
+            bankName.setPadding(20f);
 
-        PdfPCell bankAddress = new PdfPCell(new Phrase("No. 89, Aguyi Iro-sin Boulevard"));
-        bankAddress.setBorder(0);
+            PdfPCell bankAddress = new PdfPCell(new Phrase("No. 89, Aguyi Iro-sin Boulevard"));
+            bankAddress.setBorder(0);
         bankHeadingTable.addCell(bankName);
         bankHeadingTable.addCell(bankAddress);
 
-        PdfPTable statementInfoSection = new PdfPTable(2);
-        PdfPCell customerInfo = new PdfPCell( new Phrase("Start Date" +" "+startOfDay ));
-        customerInfo.setBorder(0);
-        PdfPCell statement = new PdfPCell(new Phrase("STATEMENT OF ACCOUNT"));
-        statement.setBorder(0);
-        PdfPCell stopDate = new PdfPCell(new Phrase("End Date" +" "+endOfDay ));
-        stopDate.setBorder(0);
-        PdfPCell name = new PdfPCell(new Phrase("Customer Name" + " "+customerName));
-        name.setBorder(0);
-        PdfPCell space = new PdfPCell();
-        PdfPCell address = new PdfPCell(new Phrase("Customer Address" + " " + user.getAddress()));
-        address.setBorder(0);
+        PdfPTable statementInfoSectionTable = new PdfPTable(2);
+            PdfPCell customerInfo = new PdfPCell( new Phrase("Start Date" +" "+startOfDay ));
+            customerInfo.setBorder(0);
+            PdfPCell statement = new PdfPCell(new Phrase("STATEMENT OF ACCOUNT"));
+            statement.setBorder(0);
+            PdfPCell stopDate = new PdfPCell(new Phrase("End Date" +" "+endOfDay ));
+            stopDate.setBorder(0);
+            PdfPCell name = new PdfPCell(new Phrase("Customer Name" + " "+customerName));
+            name.setBorder(0);
+            PdfPCell space = new PdfPCell();
+            PdfPCell address = new PdfPCell(new Phrase("Customer Address" + " " + user.getAddress()));
+            address.setBorder(0);
+
+        statementInfoSectionTable.addCell(customerInfo);
+        statementInfoSectionTable.addCell(statement);
+        statementInfoSectionTable.addCell(stopDate);
+        statementInfoSectionTable.addCell(name);
+        statementInfoSectionTable.addCell(space);
 
         PdfPTable transactionTable = new PdfPTable(4);
-        PdfPCell date = new PdfPCell(new Phrase("DATE"));
-        date.setBackgroundColor(BaseColor.BLUE);
-        date.setBorder(0);
-        PdfPCell transactionType = new PdfPCell(new Phrase("TRANSACTION TYPE"));
-        transactionType.setBackgroundColor(BaseColor.BLUE);
-        transactionType.setBorder(0);
-        PdfPCell transactionAmount = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
-        transactionAmount.setBackgroundColor(BaseColor.BLUE);
-        transactionAmount.setBorder(0);
-        PdfPCell status = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
-        status.setBackgroundColor(BaseColor.BLUE);
-        status.setBorder(0);
+            PdfPCell date = new PdfPCell(new Phrase("DATE"));
+            date.setBackgroundColor(BaseColor.BLUE);
+            date.setBorder(0);
+            PdfPCell transactionType = new PdfPCell(new Phrase("TRANSACTION TYPE"));
+            transactionType.setBackgroundColor(BaseColor.BLUE);
+            transactionType.setBorder(0);
+            PdfPCell transactionAmount = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
+            transactionAmount.setBackgroundColor(BaseColor.BLUE);
+            transactionAmount.setBorder(0);
+            PdfPCell status = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
+            status.setBackgroundColor(BaseColor.BLUE);
+            status.setBorder(0);
+
+        transactionTable.addCell(date);
+        transactionTable.addCell(transactionType);
+        transactionTable.addCell(transactionAmount);
+        transactionTable.addCell(status);
 
         transactionList.forEach(transaction -> {
             transactionTable.addCell(new Phrase(transaction.getCreatedAt().toString()));
@@ -99,13 +110,12 @@ public class BankStatementServiceRepositoryImplementation {
             transactionTable.addCell(new Phrase(transaction.getAmount().toString()));
             transactionTable.addCell(new Phrase(transaction.getStatus()));
         });
-        statementInfoSection.addCell(customerInfo);
-        statementInfoSection.addCell(statement);
-        statementInfoSection.addCell(stopDate);
-        statementInfoSection.addCell(name);
-        statementInfoSection.addCell(space);
 
+        document.add(bankHeadingTable);
+        document.add(statementInfoSectionTable);
+        document.add(transactionTable);
 
+        document.close();
 
 
 
