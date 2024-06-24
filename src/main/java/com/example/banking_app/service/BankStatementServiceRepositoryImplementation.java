@@ -116,6 +116,7 @@ public class BankStatementServiceRepositoryImplementation {
         document.add(transactionTable);
 
 //        document.close();//        document.close();document.close();
+        //        document.close();//        document.close();document.close();
         document.close();
 
 
